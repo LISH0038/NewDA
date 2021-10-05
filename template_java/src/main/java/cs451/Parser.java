@@ -70,4 +70,8 @@ public class Parser {
         return configParser.getPath();
     }
 
+    public int m() {
+        return configParser.getM();
+    }
+
 }

@@ -53,11 +53,13 @@ public class Main {
         System.out.println("Path to config:");
         System.out.println("===============");
         System.out.println(parser.config() + "\n");
+        System.out.println(parser.m() + "\n");
 
         System.out.println("Doing some initialization\n");
 
         System.out.println("Broadcasting and delivering messages...\n");
-
+        TestServer server = new TestServer();
+        server.run();
         // After a process finishes broadcasting,
         // it waits forever for the delivery of messages.
         while (true) {
