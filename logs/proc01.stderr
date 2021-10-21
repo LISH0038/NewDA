@@ -1,0 +1,15 @@
+Exception in thread "receive" java.lang.ArrayIndexOutOfBoundsException: Index 10000 out of bounds for length 10000
+	at cs451.PerfectLink.lambda$new$2(PerfectLink.java:77)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+java.lang.InterruptedException
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2056)
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2090)
+	at java.base/java.util.concurrent.ArrayBlockingQueue.take(ArrayBlockingQueue.java:417)
+	at cs451.FairlossLink.lambda$new$0(FairlossLink.java:29)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+java.lang.InterruptedException
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2056)
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2090)
+	at java.base/java.util.concurrent.ArrayBlockingQueue.put(ArrayBlockingQueue.java:367)
+	at cs451.FairlossLink.lambda$new$1(FairlossLink.java:43)
+	at java.base/java.lang.Thread.run(Thread.java:834)

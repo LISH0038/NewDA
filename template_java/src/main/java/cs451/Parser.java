@@ -74,4 +74,7 @@ public class Parser {
         return configParser.getM();
     }
 
+    public int i() {
+        return configParser.getI();
+    }
 }
