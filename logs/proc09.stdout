@@ -1,8 +1,8 @@
-My PID: 66507
+My PID: 66514
 
-From a new terminal type `kill -SIGINT 66507` or `kill -SIGTERM 66507` to stop processing packets
+From a new terminal type `kill -SIGINT 66514` or `kill -SIGTERM 66514` to stop processing packets
 
-My ID: 2
+My ID: 9
 
 List of resolved hosts is:
 ==========================
@@ -49,7 +49,7 @@ Human-readable Port: 11010
 
 Path to output:
 ===============
-/Users/melody/Documents/GitHub/CS451-2021-project/logs/proc02.output
+/Users/melody/Documents/GitHub/CS451-2021-project/logs/proc09.output
 
 Path to config:
 ===============
@@ -59,59 +59,58 @@ logs/config
 
 Doing some initialization
 
-receive count: 2348
 pl send exit here
 Broadcasting and delivering messages...
 
-resend count: 89612
-resend count: 78855
-resend count: 72032
-resend count: 66668
-receive count: 39546
-receive count: 39547
-receive count: 39548
-receive count: 39549
-receive count: 44384
-receive count: 44385
-receive count: 44386
-receive count: 44387
-receive count: 44388
-receive count: 44389
-receive count: 44390
-receive count: 44391
-receive count: 44392
-receive count: 44393
-receive count: 44394
-receive count: 44395
-receive count: 44396
-receive count: 44397
-receive count: 44398
-resend count: 63340
-resend count: 54749
-resend count: 50319
-resend count: 43006
-resend count: 38855
-resend count: 32066
-resend count: 29473
-resend count: 27018
-resend count: 24577
-resend count: 23797
-resend count: 23277
-resend count: 21434
-resend count: 17846
-resend count: 17528
-resend count: 16170
-resend count: 15420
-receive count: 91138
-receive count: 91139
-resend count: 9806
-resend count: 6878
-resend count: 5693
-resend count: 5572
-resend count: 4689
-resend count: 4421
-resend count: 1498
-resend count: 422
+resend count: 91194
+receive count: 23615
+resend count: 84152
+resend count: 71880
+resend count: 63207
+resend count: 60177
+receive count: 48331
+resend count: 58344
+resend count: 51154
+resend count: 48137
+receive count: 60600
+receive count: 60601
+receive count: 60602
+receive count: 60603
+receive count: 60604
+receive count: 60605
+receive count: 60606
+receive count: 60607
+receive count: 60608
+receive count: 60609
+resend count: 45159
+resend count: 38461
+resend count: 31848
+receive count: 72078
+receive count: 72079
+receive count: 72080
+receive count: 72081
+receive count: 72082
+receive count: 72083
+receive count: 72084
+resend count: 29396
+resend count: 23762
+resend count: 22013
+resend count: 20950
+receive count: 82569
+receive count: 82570
+receive count: 82571
+resend count: 18297
+resend count: 15406
+resend count: 14652
+resend count: 13619
+resend count: 9518
+resend count: 7376
+resend count: 7128
+resend count: 5677
+resend count: 4180
+resend count: 2444
+resend count: 1227
+resend count: 226
 resend count: 0
 resend count: 0
 resend count: 0
@@ -321,5 +320,5 @@ resend count: 0
 Immediately stopping network packet processing.
 Writing output.
 fl receive exit here
-pl resend exit here
 fl send exit here
+pl resend exit here

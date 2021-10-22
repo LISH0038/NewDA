@@ -1,16 +1,16 @@
-Exception in thread "resend" java.lang.ArrayIndexOutOfBoundsException: Index -1 out of bounds for length 10000
-	at cs451.PerfectLink.resendMsgWithNoAck(PerfectLink.java:127)
-	at cs451.PerfectLink.lambda$new$1(PerfectLink.java:60)
+java.lang.InterruptedException: sleep interrupted
+	at java.base/java.lang.Thread.sleep(Native Method)
+	at cs451.PerfectLink.lambda$new$0(PerfectLink.java:56)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+java.lang.InterruptedException
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2056)
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2090)
+	at java.base/java.util.concurrent.ArrayBlockingQueue.take(ArrayBlockingQueue.java:417)
+	at cs451.PerfectLink.lambda$new$1(PerfectLink.java:70)
 	at java.base/java.lang.Thread.run(Thread.java:834)
 java.lang.InterruptedException
 	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2056)
 	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2090)
 	at java.base/java.util.concurrent.ArrayBlockingQueue.take(ArrayBlockingQueue.java:417)
 	at cs451.FairlossLink.lambda$new$0(FairlossLink.java:29)
-	at java.base/java.lang.Thread.run(Thread.java:834)
-java.lang.InterruptedException
-	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2056)
-	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2090)
-	at java.base/java.util.concurrent.ArrayBlockingQueue.take(ArrayBlockingQueue.java:417)
-	at cs451.PerfectLink.lambda$new$2(PerfectLink.java:71)
 	at java.base/java.lang.Thread.run(Thread.java:834)

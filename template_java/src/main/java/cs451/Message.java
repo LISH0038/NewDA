@@ -55,16 +55,16 @@ public class Message implements Serializable {
         this.dstPort = dstPort;
     }
 
-//    @Override
-//    public int hashCode() {
-//        return this.getSeq();
-//    }
-//
-//    @Override
-//    public boolean equals(Object ob) {
-//        if (this.getSeq() == ((Message) ob).getSeq()) {
-//            return true;
-//        }
-//        return false;
-//    }
+    @Override
+    public int hashCode() {
+        return this.getSeq();
+    }
+
+    @Override
+    public boolean equals(Object ob) {
+        if (this.getSeq() == ((Message) ob).getSeq()) {
+            return true;
+        }
+        return false;
+    }
 }

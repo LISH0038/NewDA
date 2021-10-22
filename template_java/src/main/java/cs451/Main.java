@@ -74,8 +74,8 @@ public class Main {
 
         if (id == i) {
             // this process serves as receiving only
-            pl = new PerfectLink(hostAddr, id, hostPort, "", 0, new ArrayList<>());
-            pl.startReceive();
+            pl = new PerfectLink(hostAddr, id, hostPort, false);
+            pl.startThread();
         } else {
             // this process serves as sending only
             for (Host h: parser.hosts()) {
@@ -91,8 +91,9 @@ public class Main {
                 msg.setDestination(dstAddr, dstPort);
                 msgToSend.add(msg);
             }
-            pl = new PerfectLink(hostAddr, id, hostPort, dstAddr, dstPort, msgToSend);
-            pl.startSend();
+            pl = new PerfectLink(hostAddr, id, hostPort, true);
+            pl.startThread();
+            pl.send(msgToSend);
         }
         System.out.println("Broadcasting and delivering messages...\n");
 

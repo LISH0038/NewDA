@@ -1,8 +1,8 @@
-My PID: 66507
+My PID: 66515
 
-From a new terminal type `kill -SIGINT 66507` or `kill -SIGTERM 66507` to stop processing packets
+From a new terminal type `kill -SIGINT 66515` or `kill -SIGTERM 66515` to stop processing packets
 
-My ID: 2
+My ID: 10
 
 List of resolved hosts is:
 ==========================
@@ -49,7 +49,7 @@ Human-readable Port: 11010
 
 Path to output:
 ===============
-/Users/melody/Documents/GitHub/CS451-2021-project/logs/proc02.output
+/Users/melody/Documents/GitHub/CS451-2021-project/logs/proc10.output
 
 Path to config:
 ===============
@@ -59,61 +59,55 @@ logs/config
 
 Doing some initialization
 
-receive count: 2348
+receive count: 1306
+receive count: 4366
+receive count: 4367
+receive count: 4368
+receive count: 4369
 pl send exit here
 Broadcasting and delivering messages...
 
-resend count: 89612
-resend count: 78855
-resend count: 72032
-resend count: 66668
-receive count: 39546
-receive count: 39547
-receive count: 39548
-receive count: 39549
-receive count: 44384
-receive count: 44385
-receive count: 44386
-receive count: 44387
-receive count: 44388
-receive count: 44389
-receive count: 44390
-receive count: 44391
-receive count: 44392
-receive count: 44393
-receive count: 44394
-receive count: 44395
-receive count: 44396
-receive count: 44397
-receive count: 44398
-resend count: 63340
-resend count: 54749
-resend count: 50319
-resend count: 43006
-resend count: 38855
-resend count: 32066
-resend count: 29473
-resend count: 27018
-resend count: 24577
-resend count: 23797
-resend count: 23277
-resend count: 21434
-resend count: 17846
-resend count: 17528
-resend count: 16170
-resend count: 15420
-receive count: 91138
-receive count: 91139
-resend count: 9806
-resend count: 6878
-resend count: 5693
-resend count: 5572
-resend count: 4689
-resend count: 4421
-resend count: 1498
-resend count: 422
-resend count: 0
-resend count: 0
+resend count: 95958
+receive count: 11971
+resend count: 90438
+resend count: 81015
+resend count: 75124
+resend count: 68793
+resend count: 65059
+resend count: 53372
+resend count: 50731
+receive count: 56770
+resend count: 47966
+receive count: 61685
+receive count: 61686
+receive count: 61687
+receive count: 61688
+receive count: 61689
+receive count: 61690
+receive count: 61691
+receive count: 61692
+receive count: 61693
+receive count: 61694
+receive count: 61695
+resend count: 42991
+resend count: 38103
+resend count: 35741
+resend count: 21196
+resend count: 19793
+resend count: 17103
+resend count: 12374
+resend count: 11192
+resend count: 10617
+resend count: 9755
+resend count: 8776
+resend count: 8159
+resend count: 7896
+resend count: 7759
+resend count: 7476
+resend count: 4989
+resend count: 4166
+resend count: 3139
+resend count: 1349
 resend count: 0
 resend count: 0
 resend count: 0

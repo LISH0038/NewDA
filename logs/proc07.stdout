@@ -1,6 +1,6 @@
-My PID: 44907
+My PID: 66512
 
-From a new terminal type `kill -SIGINT 44907` or `kill -SIGTERM 44907` to stop processing packets
+From a new terminal type `kill -SIGINT 66512` or `kill -SIGTERM 66512` to stop processing packets
 
 My ID: 7
 
@@ -38,6 +38,14 @@ Human-readable Port: 11007
 Human-readable IP: 127.0.0.1
 Human-readable Port: 11008
 
+9
+Human-readable IP: 127.0.0.1
+Human-readable Port: 11009
+
+10
+Human-readable IP: 127.0.0.1
+Human-readable Port: 11010
+
 
 Path to output:
 ===============
@@ -47,43 +55,270 @@ Path to config:
 ===============
 logs/config
 
-10000
+100000
 
 Doing some initialization
 
+pl send exit here
 Broadcasting and delivering messages...
 
-receive msg: cs451.Message@2aa3da09
-receive msg: cs451.Message@2f0e2d98
-receive msg: cs451.Message@198ff75e
-receive msg: cs451.Message@4a43cfdd
-receive msg: cs451.Message@7e84270e
-receive msg: cs451.Message@2038b7ab
-receive msg: cs451.Message@466b81f5
-receive msg: cs451.Message@120293c2
-receive msg: cs451.Message@4d617adb
-receive msg: cs451.Message@28010933
-receive msg: cs451.Message@327f41ef
-receive msg: cs451.Message@34e558e1
-receive msg: cs451.Message@72944b04
-receive msg: cs451.Message@52fc8cf4
-receive msg: cs451.Message@1a44df7d
-receive msg: cs451.Message@478ae84
-receive msg: cs451.Message@54e40964
-receive msg: cs451.Message@6249b420
-receive msg: cs451.Message@5eca3023
-receive msg: cs451.Message@1f07b9f0
-receive msg: cs451.Message@6bdc2c5d
-receive msg: cs451.Message@441b6db2
-receive msg: cs451.Message@4b5f163a
-receive msg: cs451.Message@6935fe98
-receive msg: cs451.Message@63818927
-receive msg: cs451.Message@7ce80e18
-receive msg: cs451.Message@4f352979
-receive msg: cs451.Message@932df39
-pl send exit here
+resend count: 94673
+resend count: 89844
+receive count: 19706
+resend count: 83955
+resend count: 75130
+resend count: 63201
+receive count: 43174
+receive count: 43175
+receive count: 43176
+receive count: 43177
+receive count: 43178
+receive count: 43179
+receive count: 43180
+receive count: 43181
+receive count: 43182
+receive count: 43183
+receive count: 43184
+receive count: 45376
+resend count: 57386
+resend count: 50595
+resend count: 44423
+resend count: 43577
+resend count: 42133
+resend count: 39420
+resend count: 37275
+receive count: 69161
+receive count: 69162
+receive count: 69163
+receive count: 69164
+receive count: 69165
+receive count: 69166
+receive count: 69167
+receive count: 69168
+receive count: 69169
+receive count: 69170
+receive count: 69171
+resend count: 32174
+resend count: 26034
+receive count: 81191
+resend count: 23891
+resend count: 18186
+resend count: 15918
+resend count: 10838
+resend count: 10126
+resend count: 9870
+resend count: 9515
+resend count: 9270
+resend count: 9174
+resend count: 7422
+resend count: 6981
+resend count: 6195
+resend count: 3067
+resend count: 1536
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
+resend count: 0
 Immediately stopping network packet processing.
 Writing output.
 fl receive exit here
-pl receive exit here
+pl resend exit here
 fl send exit here
