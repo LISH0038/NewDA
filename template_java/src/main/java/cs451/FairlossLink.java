@@ -20,7 +20,7 @@ public class FairlossLink {
             this.socket = new DatagramSocket(port, InetAddress.getByName(host));
             running = true;
         } catch (Exception e){
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         //TODO remove thread here
         t1 = new Thread( () -> {
@@ -29,7 +29,7 @@ public class FairlossLink {
                     Message msg = sendBuff.take();
                     send(msg);
                 } catch (InterruptedException e) {
-                    //e.printStackTrace();
+                    // e.printStackTrace();
                 }
             }
             System.out.println("fl send exit here");
@@ -43,7 +43,7 @@ public class FairlossLink {
                         receiveBuff.put(msg);
                     }
                 } catch (InterruptedException e) {
-                    //e.printStackTrace();
+                    // e.printStackTrace();
                 }
             }
             System.out.println("fl receive exit here");
@@ -85,7 +85,7 @@ public class FairlossLink {
         try {
             socket.receive(packet);
         } catch (IOException e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             return null;
         }
         Payload data = Serializer.deserialize(packet.getData());
@@ -96,7 +96,9 @@ public class FairlossLink {
 
     public void stop(){
         running = false;
-        this.socket.close();
+        if (this.socket != null) {
+            this.socket.close();
+        }
         this.t1.interrupt();
         this.t2.interrupt();
     }

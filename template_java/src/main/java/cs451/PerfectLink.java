@@ -52,12 +52,12 @@ public class PerfectLink {
         }, "resend");
 
         receive = new Thread( () -> {
-            int count = 0;
+            //int count = 0;
             while(running) {
                 if (this.isSender) {
                     try {
                         Message m = this.fl.getReceiveBuff().take();
-                        count += 1;
+                        //count += 1;
                         if (!m.isMsg() && !ackSet.contains(m.getSeq())){
                             ackSet.add(m.getSeq());
                         }
@@ -68,7 +68,7 @@ public class PerfectLink {
                 } else {
                     try {
                         Message m = this.fl.getReceiveBuff().take();
-                        count += 1;
+                        //count += 1;
                         // TODO check race condition
                         while (m.getSource() > this.receivedMsgIndexSet.size()) {
                             this.receivedMsgIndexSet.add(new HashSet<>(100000));
@@ -88,9 +88,9 @@ public class PerfectLink {
                         // e.printStackTrace();
                     }
                 }
-                if(System.currentTimeMillis()%1000 == 0) {
-                    System.out.println("receive count: "+count);
-                }
+//                if(System.currentTimeMillis()%1000 == 0) {
+//                    System.out.println("receive count: "+count);
+//                }
             }
         }, "receive");
     }
@@ -125,25 +125,25 @@ public class PerfectLink {
                 this.resendBuff.add(m);
                 OutputWriter.addLineToOutputBuffer("b "+m.getSeq());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
         }
         System.out.println("pl send exit here");
     }
 
     private void resendMsgWithNoAck() throws InterruptedException {
-        int count = 0;
+        //int count = 0;
         ArrayList<Message> newToSend = new ArrayList<>();
         while (!this.resendBuff.isEmpty()){
             Message m = this.resendBuff.poll();
             if (!this.ackSet.contains(m.getSeq())) {
-                count +=1;
+                //count +=1;
                 newToSend.add(m);
                 this.fl.getSendBuff().put(m);
             }
         }
         this.resendBuff.addAll(newToSend);
 
-        System.out.println("resend count: " + count);
+        //System.out.println("resend count: " + count);
     }
 }
