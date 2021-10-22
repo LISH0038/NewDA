@@ -1,7 +1,6 @@
 package cs451;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
@@ -13,33 +12,33 @@ import java.util.concurrent.TimeUnit;
 
 public class PerfectLink {
     private FairlossLink fl;
-    private int[] ackSet;
-    private ArrayList<int[]> receivedMsgSet;
+    private HashSet<Integer> ackSet;
+    private int ackMark = 0;
+
+    private ArrayList<HashSet<Integer>> receivedMsgIndexSet;
 //    private final Runnable send;
 //    private final Runnable resend;
 //    private final Runnable receive;
     private int hostId;
     private String dstHost;
     private int dstPort;
-    private int numOfMsg;
 
     private final Thread send;
     private final Thread resend;
     private final Thread receive;
     private static boolean running;
-    private int sentMark = 0;
 
     // Max seq number stored for each process: sentMark + 2048
     // private int[] sentMark;
 
-    public PerfectLink(String hostAddr, int hostId, int hostPort, String dstAddr, int dstPort, int numOfMsg, ArrayList<Message> msgsToSend) {
+    public PerfectLink(String hostAddr, int hostId, int hostPort, String dstAddr, int dstPort, ArrayList<Message> msgsToSend) {
         this.fl = new FairlossLink(hostAddr, hostPort);
-        this.ackSet = new int[numOfMsg]; //TODO memory optimization
-        this.receivedMsgSet = new ArrayList<>();
+        //TODO remove numOfMsg
+        this.ackSet = new HashSet<>(100000); //TODO memory optimization
+        this.receivedMsgIndexSet = new ArrayList<>();
         this.hostId = hostId;
         this.dstHost = dstAddr;
         this.dstPort = dstPort;
-        this.numOfMsg = numOfMsg;
 
         send = new Thread( () -> {
             for (Message m: msgsToSend) {
@@ -54,9 +53,14 @@ public class PerfectLink {
         }, "send");
 
         resend = new Thread( () -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             while(running) {
                 try {
-                    TimeUnit.SECONDS.sleep(5);
+                    Thread.sleep(1000);
                     resendMsgWithNoAck();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -66,22 +70,26 @@ public class PerfectLink {
         }, "resend");
 
         receive = new Thread( () -> {
+            int count = 0;
             while(running) {
                 try {
                     Message m = this.fl.getReceiveBuff().take();
                     // TODO check race condition
-                    while (m.getSource() > this.receivedMsgSet.size()) {
-                        this.receivedMsgSet.add(new int[this.numOfMsg]);
+                    while (m.getSource() > this.receivedMsgIndexSet.size()) {
+                        this.receivedMsgIndexSet.add(new HashSet<>(100000));
                     }
                     //String msgId = getMsgUniqueId(m);
-                    if (m.isMsg() && receivedMsgSet.get(m.getSource()-1)[m.getSeq()-1] == 0) {
-                        receivedMsgSet.get(m.getSource()-1)[m.getSeq()-1] = 1;
-                        OutputWriter.addLineToOutputBuffer("d "+m.getSource()+" "+m.getSeq());
+                    if (m.isMsg()) {
+                        if (!receivedMsgIndexSet.get(m.getSource()-1).contains(m.getSeq())) {
+                            receivedMsgIndexSet.get(m.getSource()-1).add(m.getSeq());
+                            //TODO new thread for output
+                            OutputWriter.addLineToOutputBuffer("d "+m.getSource()+" "+m.getSeq());
+                        }
                         Message newMsg = new Message(false, this.hostId, m.getSeq());
                         newMsg.setDestination(m.getSrcHost(), m.getSrcPort());
                         this.fl.getSendBuff().put(newMsg);
-                    } else if (!m.isMsg() && ackSet[m.getSeq()-1] == 0){
-                        ackSet[m.getSeq()-1] = 1;
+                    } else if (!m.isMsg() && !ackSet.contains(m.getSeq())){
+                        ackSet.add(m.getSeq());
                     }
                     //System.out.println(Thread.currentThread().getName() + " msg: " + m);
                 } catch (InterruptedException e) {
@@ -91,6 +99,7 @@ public class PerfectLink {
             System.out.println("pl receive exit here");
         }, "receive");
     }
+
     public void startSend() {
         // TODO try with more threads
         running = true;
@@ -122,15 +131,15 @@ public class PerfectLink {
     }
 
     private void resendMsgWithNoAck() {
-        boolean flag = false;
-        for (int i = this.sentMark; i < this.ackSet.length; i++) {
-            if (this.ackSet[i] == 0) {
-                if (!flag) {
-                    this.sentMark = i;
-                    System.out.println("sentMark: " +i);
-                    flag = true;
+        boolean updateAckMark = false;
+        for (int i = this.ackMark + 1; i < this.ackMark + 10001; i++) {
+            if (!this.ackSet.contains(i)) {
+                if (!updateAckMark) {
+                    this.ackMark = i - 1;
+                    System.out.println("ackMark: " +(i -1));
+                    updateAckMark = true;
                 }
-                Message newMsg = new Message(true, this.hostId, i+1);
+                Message newMsg = new Message(true, this.hostId, i);
                 newMsg.setDestination(this.dstHost, this.dstPort);
                 try {
                     this.fl.getSendBuff().put(newMsg);
@@ -139,6 +148,10 @@ public class PerfectLink {
                 }
             }
         }
+        if (!updateAckMark) {
+            this.ackMark += 10000;
+        }
+        System.out.println("exit from resend function");
     }
 //
 //    private String getMsgUniqueId(Message m) {

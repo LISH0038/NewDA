@@ -22,7 +22,7 @@ public class FairlossLink {
         } catch (Exception e){
             e.printStackTrace();
         }
-
+        //TODO remove thread here
         t1 = new Thread( () -> {
             while(running) {
                 try {
@@ -80,7 +80,7 @@ public class FairlossLink {
     }
 
     private Message receive() {
-        byte[] buff = new byte[1024];
+        byte[] buff = new byte[128];
         DatagramPacket packet = new DatagramPacket(buff,buff.length);
         try {
             socket.receive(packet);
