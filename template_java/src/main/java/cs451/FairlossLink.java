@@ -29,7 +29,7 @@ public class FairlossLink {
                     Message msg = sendBuff.take();
                     send(msg);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
             System.out.println("fl send exit here");
@@ -43,7 +43,7 @@ public class FairlossLink {
                         receiveBuff.put(msg);
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
             System.out.println("fl receive exit here");
