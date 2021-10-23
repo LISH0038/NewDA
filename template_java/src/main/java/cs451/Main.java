@@ -1,5 +1,11 @@
 package cs451;
 
+import cs451.entity.Message;
+import cs451.link.PerfectLink;
+import cs451.utility.IdGenerator;
+import cs451.utility.OutputWriter;
+
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class Main {
@@ -89,13 +95,13 @@ public class Main {
 
             ArrayList<Message> msgToSend = new ArrayList<>();
             for (int j = 1; j < m+1; j++) {
-                Message msg = new Message(true, id, j);
+                Message msg = new Message(true, id, IdGenerator.generateId(), j);
                 msg.setDestination(dstAddr, dstPort);
                 msgToSend.add(msg);
             }
             pl = new PerfectLink(hostAddr, id, hostPort, true);
+            pl.addToSendBuff(msgToSend);
             pl.startThread();
-            pl.send(msgToSend);
         }
         System.out.println("Broadcasting and delivering messages...\n");
 
