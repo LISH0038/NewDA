@@ -91,9 +91,6 @@ public class Message implements Serializable {
 
     @Override
     public boolean equals(Object ob) {
-        if (this.getId() == ((Message) ob).getId()) {
-            return true;
-        }
-        return false;
+        return this.getId() == ((Message) ob).getId();
     }
 }

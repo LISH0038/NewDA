@@ -5,7 +5,6 @@ import cs451.link.PerfectLink;
 import cs451.utility.IdGenerator;
 import cs451.utility.OutputWriter;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class Main {
@@ -25,7 +24,6 @@ public class Main {
         //write/flush output file if necessary
         System.out.println("Writing output.");
         OutputWriter.outputToFile(outputPath);
-//       System.exit(0);
     }
 
     private static void initSignalHandlers() {

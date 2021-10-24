@@ -22,7 +22,7 @@ public class PerfectLink {
     private LinkedBlockingQueue<Message> sendBuff = new LinkedBlockingQueue<>();
 
     // Stores array of received msg index for each process
-    private ArrayList<HashSet<Integer>> receivedMsgIndexSet = new ArrayList<>();;
+    private ArrayList<HashSet<Integer>> receivedMsgIdSet = new ArrayList<>();;
 
     private int hostId;
     private final Thread send;
@@ -42,20 +42,7 @@ public class PerfectLink {
         send = new Thread( () -> {
 //            int count  = 0;
             while(running) {
-//                for (Message m : this.sendBuff) {
-//                    if (!this.ackSet.contains(m.getId())) {
-//                        if (m.isMsg() && !m.isSent()) {
-//                            OutputWriter.addLineToOutputBuffer("b "+m.getData());
-//                            m.setSent(true);
-//                        }
-//                        this.udp.send(m);
-//                        //this.sendBuff.add(m);
-//                        System.out.println("sending "+m.getId());
-//                    }
-//                    System.out.println(++count + " " +System.currentTimeMillis());
-//                }
                 try {
-
                     Message m = this.sendBuff.take();
                     if (m.isMsg()) {
                         if (!this.ackSet.containsKey(m.getId())) {
@@ -90,17 +77,18 @@ public class PerfectLink {
                     }
                     //System.out.println(Thread.currentThread().getName() + " msg: " + m);
                 } else {
-                    while (m.getSource() > this.receivedMsgIndexSet.size()) {
-                        this.receivedMsgIndexSet.add(new HashSet<>(100000));
+                    while (m.getSource() > this.receivedMsgIdSet.size()) {
+                        this.receivedMsgIdSet.add(new HashSet<>(100000));
                     }
                     if (m.isMsg()) {
-                        if (!receivedMsgIndexSet.get(m.getSource()-1).contains(m.getId())) {
-                            receivedMsgIndexSet.get(m.getSource()-1).add(m.getId());
-                            OutputWriter.addLineToOutputBuffer("d "+m.getSource()+" "+m.getData());
-                        }
-                        Message newMsg = new Message(false, this.hostId, m.getId(), m.getData());
+                        Message newMsg = new Message(false, this.hostId, m.getId(), 0);
                         newMsg.setDestination(m.getSrcHost(), m.getSrcPort());
                         this.sendBuff.add(newMsg);
+
+                        if (!receivedMsgIdSet.get(m.getSource()-1).contains(m.getId())) {
+                            receivedMsgIdSet.get(m.getSource()-1).add(m.getId());
+                            OutputWriter.addLineToOutputBuffer("d "+m.getSource()+" "+m.getData());
+                        }
                     }
                     //System.out.println("receive " + ++count + " " +System.currentTimeMillis());
                 }
