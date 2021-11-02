@@ -24,13 +24,13 @@ public class ConfigParser {
                 }
 
                 String[] splits = line.split(SPACES_REGEX);
-                if (splits.length != 2) {
-                    System.err.println("Problem with the line " + lineNum + " in the config file!");
-                    return false;
-                }
+//                if (splits.length != 2) {
+//                    System.err.println("Problem with the line " + lineNum + " in the config file!");
+//                    return false;
+//                }
 
                 m = Integer.parseInt(splits[0]);
-                i = Integer.parseInt(splits[1]);
+                // i = Integer.parseInt(splits[1]);
             }
         } catch (IOException e) {
             System.err.println("Problem with the config file!");

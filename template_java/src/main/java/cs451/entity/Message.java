@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 public class Message implements Serializable {
-    private boolean isMsg;
+    // state: 0 - Ack, 1 - Msg, 2 - Broadcast
+    private int type;
     private boolean sent;
     private int source;
     private int id;
@@ -14,11 +15,21 @@ public class Message implements Serializable {
     private String dstHost;
     private int dstPort;
 
-    public Message(boolean isMsg, int source, int id, int data) {
-        this.isMsg = isMsg;
+    public Message(int type, int source, int id, int data) {
+        this.type = type;
         this.source = source;
         this.id = id;
         this.data = data;
+    }
+
+    public Message(byte[] data) {
+        String raw = new String(data, 0, data.length, StandardCharsets.UTF_8);
+        String[] metas = raw.substring(1).split(":");
+
+        this.type = Integer.parseInt(metas[0]);
+        this.source = Integer.parseInt(metas[1]);
+        this.id = Integer.parseInt(metas[2]);
+        this.data = Integer.parseInt(metas[3]);
     }
 
     public int getData(){
@@ -37,8 +48,8 @@ public class Message implements Serializable {
         this.sent = sent;
     }
 
-    public boolean isMsg() {
-        return this.isMsg;
+    public int getType() {
+        return this.type;
     }
 
     public int getSource() {
@@ -71,17 +82,8 @@ public class Message implements Serializable {
         this.dstPort = dstPort;
     }
 
-    public static byte[] serialize(Message m) {
-        int isMsg = m.isMsg()? 1 : 0;
-        return String.format("%d%d:%d:%d:", isMsg, m.getSource(), m.getId(), m.getData()).getBytes(StandardCharsets.UTF_8);
-    }
-
-    public static Message deserialize(byte[] data) {
-        String raw = new String(data, 0, data.length, StandardCharsets.UTF_8);
-        boolean isMsg = raw.charAt(0) == '1';
-        String[] metas = raw.substring(1).split(":");
-
-        return new Message(isMsg, Integer.parseInt(metas[0]), Integer.parseInt(metas[1]), Integer.parseInt(metas[2]));
+    public byte[] serialize() {
+        return String.format("%d:%d:%d:%d:", this.type, this.source, this.id, this.data).getBytes(StandardCharsets.UTF_8);
     }
 
     @Override

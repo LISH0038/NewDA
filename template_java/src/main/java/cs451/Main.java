@@ -1,5 +1,6 @@
 package cs451;
 
+import cs451.broadcast.Broadcast;
 import cs451.entity.Message;
 import cs451.link.PerfectLink;
 import cs451.utility.IdGenerator;
@@ -10,16 +11,15 @@ import java.util.ArrayList;
 public class Main {
     private static String hostAddr;
     private static int hostPort;
-    private static String dstAddr;
-    private static int dstPort;
-    private static PerfectLink pl;
+
+    private static Broadcast bc;
     private static String outputPath;
 
     private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
-        if (pl != null) {
-            pl.stop();
+        if (bc != null) {
+            bc.stop();
         }
         //write/flush output file if necessary
         System.out.println("Writing output.");
@@ -56,10 +56,13 @@ public class Main {
             System.out.println();
         }
         int id = parser.myId();
+        ArrayList<Host> dstHosts = new ArrayList<>();
         for (Host h: parser.hosts()) {
             if (h.getId() == id) {
                 hostAddr = h.getIp();
                 hostPort = h.getPort();
+            } else {
+                dstHosts.add(h);
             }
         }
         System.out.println();
@@ -76,31 +79,15 @@ public class Main {
 
         System.out.println("Doing some initialization\n");
         int m = parser.m();
-        int i = parser.i();
-
-        if (id == i) {
-            // this process serves as receiving only
-            pl = new PerfectLink(hostAddr, id, hostPort, false);
-            pl.startThread();
-        } else {
-            // this process serves as sending only
-            for (Host h: parser.hosts()) {
-                if (h.getId() == i) {
-                    dstAddr = h.getIp();
-                    dstPort = h.getPort();
-                }
-            }
-
-            ArrayList<Message> msgToSend = new ArrayList<>();
-            for (int j = 1; j < m+1; j++) {
-                Message msg = new Message(true, id, IdGenerator.generateId(), j);
-                msg.setDestination(dstAddr, dstPort);
-                msgToSend.add(msg);
-            }
-            pl = new PerfectLink(hostAddr, id, hostPort, true);
-            pl.addToSendBuff(msgToSend);
-            pl.startThread();
+        ArrayList<Message> msgToSend = new ArrayList<>();
+        bc = new Broadcast(id, hostAddr, hostPort, dstHosts);
+        bc.start();
+        for (int j = 1; j < m+1; j++) {
+            Message msg = new Message(2, id, IdGenerator.generateId(), j);
+            msgToSend.add(msg);
+            bc.broadcast(msg);
         }
+
         System.out.println("Broadcasting and delivering messages...\n");
 
         // After a process finishes broadcasting,
