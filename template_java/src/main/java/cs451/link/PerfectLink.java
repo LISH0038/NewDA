@@ -1,7 +1,6 @@
 package cs451.link;
 
 import cs451.Host;
-import cs451.utility.OutputWriter;
 import cs451.entity.Message;
 
 import java.util.List;
@@ -18,13 +17,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class PerfectLink {
     private UdpLink udp;
+    public List<Host> dstHosts;
 
     // AckSet works for sender, it stores ack received from the receiver. It is a hashset of msg seq.
-    private ConcurrentHashMap<Integer, Integer> ackSet;
-    private LinkedBlockingQueue<Message> sendBuff = new LinkedBlockingQueue<>();
+    private ConcurrentHashMap<String, Integer> ackSet = new ConcurrentHashMap<>(100000);
+    public LinkedBlockingQueue<Message> sendBuff = new LinkedBlockingQueue<>();
+    public LinkedBlockingQueue<Message> deliverBuff = new LinkedBlockingQueue<>();
 
     // Stores array of received msg index for each process
-    private ArrayList<HashSet<Integer>> receivedMsgIdSet = new ArrayList<>();;
+    private HashSet<String> delivered = new HashSet<>(100000);
 
     private int hostId;
     private final Thread send;
@@ -32,12 +33,9 @@ public class PerfectLink {
     private boolean running = false;
 
     public PerfectLink(int hostId, String hostAddr, int hostPort, List<Host> dstHosts) {
-        this.udp = new UdpLink(hostAddr, hostPort, dstHosts);
-        this.ackSet = new ConcurrentHashMap<>(100000);
-        for (int i = 0; i < dstHosts.size(); i++) {
-            this.receivedMsgIdSet.add(new HashSet<>(100000));
-        }
+        this.udp = new UdpLink(hostId, hostAddr, hostPort, dstHosts);
         this.hostId = hostId;
+        this.dstHosts = dstHosts;
 
         send = new Thread( () -> {
 //            int count  = 0;
@@ -48,20 +46,27 @@ public class PerfectLink {
                         // Send ack
                         this.udp.send(m);
                     } else if (m.getType() == 2){
-                        // For Submission 1 - Broadcast
-                        if (!this.ackSet.containsKey(m.getId())) {
+                        // For Broadcast
+                        if (!this.ackSet.containsKey(m.getUid())) {
                             if (!m.isSent()) {
-                                m.setSent(true);
+                                m.setSent(true); // ? I forgot why I put this
                             }
-                            this.udp.send(m);
-                            this.sendBuff.add(m);
+                            this.udp.sendToAll(m);
+                            // this.sendBuff.add(m);
+                            for (Host h: dstHosts) {
+                                Message mCopy = new Message(1, m.getSrcId(), m.getSeq(), m.getData());
+                                mCopy.setForwardId(this.hostId);
+                                mCopy.setDstId(h.getId());
+                                mCopy.setDestination(h.getIp(), h.getPort());
+                                this.sendBuff.add(mCopy);
+                            }
                             //System.out.println("sending "+m.getId());
                         } else {
-                            this.ackSet.remove(m.getId());
+                            this.ackSet.remove(m.getUid());
                         }
                     }  else if (m.getType() == 1){
-                        // For Submission 0 - point to point link
-                        if (!this.ackSet.containsKey(m.getId())) {
+                        // For point to point link
+                        if (!this.ackSet.containsKey(m.getUid())) {
                             if (!m.isSent()) {
                                 m.setSent(true);
                             }
@@ -69,7 +74,7 @@ public class PerfectLink {
                             this.sendBuff.add(m);
                             //System.out.println("sending "+m.getId());
                         } else {
-                            this.ackSet.remove(m.getId());
+                            this.ackSet.remove(m.getUid());
                         }
                     }
                     //System.out.println("send " + ++count + " " +System.currentTimeMillis());
@@ -87,15 +92,20 @@ public class PerfectLink {
                     continue;
                 }
 //                count += 1;
-                if (m.getType() == 0 && !ackSet.containsKey(m.getId())){
-                    ackSet.put(m.getId(), 1);
+                if (m.getType() == 0 ){
+                    if (!this.ackSet.containsKey(m.getUid())){
+                        this.ackSet.put(m.getUid(), 1);
+                    }
+                    System.out.println(m.getUid());
                 } else {
-                    Message newMsg = new Message(0, this.hostId, m.getId(), 0);
-                    newMsg.setDestination(m.getSrcHost(), m.getSrcPort());
-                    this.sendBuff.add(newMsg);
+                    Message ackMsg = new Message(0, m.getSrcId(), m.getSeq(), 0);
+                    ackMsg.setDestination(m.getForwardHost(), m.getForwardPort());
+                    this.sendBuff.add(ackMsg);
 
-                    if (!receivedMsgIdSet.get(m.getSource()-1).contains(m.getId())) {
-                        receivedMsgIdSet.get(m.getSource()-1).add(m.getId());
+                    if (!this.delivered.contains(m.getUid())) {
+                        // trigger deliver event
+                        this.delivered.add(m.getUid());
+                        this.deliverBuff.add(m);
                     }
                     //System.out.println("receive " + ++count + " " +System.currentTimeMillis());
                 }

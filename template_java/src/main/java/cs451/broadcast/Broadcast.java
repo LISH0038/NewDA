@@ -5,8 +5,8 @@ import cs451.entity.Message;
 import cs451.link.PerfectLink;
 import cs451.utility.OutputWriter;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 // Best Effort Broadcast
 
@@ -22,12 +22,17 @@ public class Broadcast {
     }
 
     public void broadcast(Message m) {
+        m.setType(2);
         pl.addToSendBuff(m);
-        OutputWriter.addLineToOutputBuffer("b "+m.getData());
     }
 
-    public void deliver(Message m) {
-        OutputWriter.addLineToOutputBuffer("d "+m.getSource()+" "+m.getData());
+//    public void receive(Message m) {
+//
+//        OutputWriter.addLineToOutputBuffer("d "+m.getSource()+" "+m.getData());
+//    }
+
+    public Message receive() throws InterruptedException {
+        return this.pl.deliverBuff.take();
     }
 
     public void start() {
@@ -35,5 +40,6 @@ public class Broadcast {
     }
 
     public void stop() {
+        pl.stop();
     }
 }

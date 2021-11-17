@@ -6,19 +6,28 @@ import cs451.entity.Message;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
 
 public class UdpLink {
     private DatagramSocket socket;
-    public List<Host> dstHosts;
+    private int selfId;
 
-    public UdpLink(String host, int port, List<Host> dstHosts) {
+    public List<Host> dstHosts;
+    public HashMap<Integer, Integer> portToIdMap;
+
+    public UdpLink(int hostId, String host, int port, List<Host> dstHosts) {
         try {
             this.socket = new DatagramSocket(port, InetAddress.getByName(host));
         } catch (Exception e){
             // e.printStackTrace();
         }
         this.dstHosts = dstHosts;
+        this.selfId = hostId;
+        this.portToIdMap = new HashMap<>();
+        for (Host h: dstHosts) {
+            this.portToIdMap.put(h.getPort(), h.getId());
+        }
     }
 
     public void send(Message msg)  {
@@ -49,6 +58,9 @@ public class UdpLink {
         try {
             socket.receive(packet);
             Message msg = new Message(buff);
+            int forward = this.portToIdMap.get(packet.getPort());
+            msg.setForwardId(forward);
+            msg.setDstId(this.selfId);
             msg.setSource(packet.getAddress().getHostAddress(), packet.getPort());
             return msg;
         } catch (Exception e) {

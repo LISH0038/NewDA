@@ -1,8 +1,7 @@
 package cs451;
 
-import cs451.broadcast.Broadcast;
+import cs451.broadcast.UniformReliableBroadcast;
 import cs451.entity.Message;
-import cs451.link.PerfectLink;
 import cs451.utility.IdGenerator;
 import cs451.utility.OutputWriter;
 
@@ -12,7 +11,7 @@ public class Main {
     private static String hostAddr;
     private static int hostPort;
 
-    private static Broadcast bc;
+    private static UniformReliableBroadcast bc;
     private static String outputPath;
 
     private static void handleSignal() {
@@ -80,12 +79,12 @@ public class Main {
         System.out.println("Doing some initialization\n");
         int m = parser.m();
         ArrayList<Message> msgToSend = new ArrayList<>();
-        bc = new Broadcast(id, hostAddr, hostPort, dstHosts);
+        bc = new UniformReliableBroadcast(id, hostAddr, hostPort, dstHosts);
         bc.start();
         for (int j = 1; j < m+1; j++) {
-            Message msg = new Message(2, id, IdGenerator.generateId(), j);
+            Message msg = new Message(2, id, IdGenerator.generateMsgId(), j);
             msgToSend.add(msg);
-            bc.broadcast(msg);
+            bc.urbBroadcast(msg);
         }
 
         System.out.println("Broadcasting and delivering messages...\n");
