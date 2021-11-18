@@ -254,7 +254,7 @@ def startProcesses(processes, runscript, hostsFilePath, configFilePath, outputDi
 
     return procs
 
-def main(processes, messages, runscript, testType, logsDir, testConfig):
+def main(processes, messages, runscript, testType, logsDir, duration, testConfig):
     if not os.path.isdir(logsDir):
         raise ValueError('Directory `{}` does not exist'.format(logsDir))
 
@@ -289,7 +289,7 @@ def main(processes, messages, runscript, testType, logsDir, testConfig):
         st.continueStoppedProcesses()
 
         #input("Press `Enter` when all processes have finished processing messages.")
-        time.sleep(30)
+        time.sleep(duration)
 
         unterminated = st.remainingUnterminatedProcesses()
         if unterminated is not None:
@@ -359,6 +359,15 @@ if __name__ == "__main__":
         help="Maximum number (because it can crash) of messages that each process can broadcast",
     )
 
+    parser.add_argument(
+        "-d",
+        "--duration",
+        required=True,
+        type=int,
+        dest="duration",
+        help="runtmie duration",
+    )
+
     results = parser.parse_args()
 
     testConfig = {
@@ -371,4 +380,4 @@ if __name__ == "__main__":
         }
     }
 
-    main(results.processes, results.messages, results.runscript, results.testType, results.logsDir, testConfig)
+    main(results.processes, results.messages, results.runscript, results.testType, results.logsDir, results.duration, testConfig)
