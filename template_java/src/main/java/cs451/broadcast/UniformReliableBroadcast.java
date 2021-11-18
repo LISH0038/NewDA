@@ -21,6 +21,7 @@ public class UniformReliableBroadcast {
     private HashSet<String> delivered = new HashSet<>();
     private ConcurrentHashMap<String, HashSet<Integer>> ackSet = new ConcurrentHashMap<>(100000);
     private boolean running;
+    private int resendCount;
 
     public UniformReliableBroadcast(int hostId, String hostAddr, int hostPort, List<Host> dstHosts) {
         this.beb = new Broadcast(hostId, hostAddr, hostPort, dstHosts);
@@ -44,6 +45,8 @@ public class UniformReliableBroadcast {
                     if (canDeliver(m)) {
                         delivered.add(m.getUid());
                         urbDeliver(m);
+                    } else {
+                        this.pending.add(m);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -64,12 +67,17 @@ public class UniformReliableBroadcast {
 
     public void onReceive(int forward, Message m) {
         // ack[m] := ack[m] ∪ {p};
+        // System.out.println(m.getUid());
         if (!ackSet.containsKey(m.getUid())) {
             HashSet<Integer> pList = new HashSet<>();
             pList.add(forward);
             ackSet.put(m.getUid(), pList);
             this.pending.add(m);
             this.beb.broadcast(m);
+            resendCount ++;
+            if (resendCount% 10000== 2000){
+                // System.out.println("urb forward count: " + resendCount + " " +System.currentTimeMillis()/1000);
+            }
         } else {
             ackSet.get(m.getUid()).add(forward);
         }

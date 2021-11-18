@@ -38,7 +38,7 @@ public class PerfectLink {
         this.dstHosts = dstHosts;
 
         send = new Thread( () -> {
-//            int count  = 0;
+            int resendCount  = 0;
             while(running) {
                 try {
                     Message m = this.sendBuff.take();
@@ -47,10 +47,7 @@ public class PerfectLink {
                         this.udp.send(m);
                     } else if (m.getType() == 2){
                         // For Broadcast
-                        if (!this.ackSet.containsKey(m.getUid())) {
-                            if (!m.isSent()) {
-                                m.setSent(true); // ? I forgot why I put this
-                            }
+                        if (!this.ackSet.containsKey(m.getMsgid())) {
                             this.udp.sendToAll(m);
                             // this.sendBuff.add(m);
                             for (Host h: dstHosts) {
@@ -60,24 +57,22 @@ public class PerfectLink {
                                 mCopy.setDestination(h.getIp(), h.getPort());
                                 this.sendBuff.add(mCopy);
                             }
-                            //System.out.println("sending "+m.getId());
                         } else {
-                            this.ackSet.remove(m.getUid());
+                            this.ackSet.remove(m.getMsgid());
                         }
                     }  else if (m.getType() == 1){
                         // For point to point link
-                        if (!this.ackSet.containsKey(m.getUid())) {
-                            if (!m.isSent()) {
-                                m.setSent(true);
-                            }
+                        if (!this.ackSet.containsKey(m.getMsgid())) {
                             this.udp.send(m);
                             this.sendBuff.add(m);
-                            //System.out.println("sending "+m.getId());
+                            resendCount ++;
                         } else {
-                            this.ackSet.remove(m.getUid());
+                            this.ackSet.remove(m.getMsgid());
                         }
                     }
-                    //System.out.println("send " + ++count + " " +System.currentTimeMillis());
+                    if (resendCount% 10000 == 2000){
+                        // System.out.println("pl resend count: " + resendCount + " " +System.currentTimeMillis()/1000);
+                    }
                 } catch (InterruptedException e) {
                     // e.printStackTrace();
                 }
@@ -93,18 +88,17 @@ public class PerfectLink {
                 }
 //                count += 1;
                 if (m.getType() == 0 ){
-                    if (!this.ackSet.containsKey(m.getUid())){
-                        this.ackSet.put(m.getUid(), 1);
+                    if (!this.ackSet.containsKey(m.getMsgid())){
+                        this.ackSet.put(m.getMsgid(), 1);
                     }
-                    System.out.println(m.getUid());
                 } else {
                     Message ackMsg = new Message(0, m.getSrcId(), m.getSeq(), 0);
                     ackMsg.setDestination(m.getForwardHost(), m.getForwardPort());
                     this.sendBuff.add(ackMsg);
 
-                    if (!this.delivered.contains(m.getUid())) {
+                    if (!this.delivered.contains(m.getMsgid())) {
                         // trigger deliver event
-                        this.delivered.add(m.getUid());
+                        this.delivered.add(m.getMsgid());
                         this.deliverBuff.add(m);
                     }
                     //System.out.println("receive " + ++count + " " +System.currentTimeMillis());

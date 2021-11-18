@@ -4,19 +4,23 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 public class Message implements Serializable {
-    // state: 0 - Ack, 1 - Msg, 2 - Broadcast
-    private int type;
-    private boolean sent;
+    // data to transmit
+    private int type; // 0 - Ack, 1 - Msg, 2 - Broadcast
     private int srcId;
     private int seq;
     private int data;
+
+    // auxiliary information
     private String forwardHost;
     private int forwardPort;
     private int forwardId;
     private String dstHost;
     private int dstPort;
     private int dstId;
-    private String uid;
+
+    // identifiers
+    private String msgId; // uniquely identify link level msg
+    private String uId; // uniquely identify broadcast level msg
 
     public Message(int type, int source, int seq, int data) {
         this.type = type;
@@ -40,14 +44,6 @@ public class Message implements Serializable {
 
     public int getSeq() {
         return seq;
-    }
-
-    public boolean isSent() {
-        return sent;
-    }
-
-    public void setSent(boolean sent) {
-        this.sent = sent;
     }
 
     public int getType() {
@@ -74,12 +70,19 @@ public class Message implements Serializable {
         return forwardPort;
     }
 
-    public String getUid() {
-        if (this.uid == null) {
-            this.uid = this.type == 0 ? this.srcId +","+ this.dstId +","+ this.forwardId +","+ this.seq
-                    : this.srcId +","+ this.forwardId +","+ this.dstId +","+ this.seq;
+    public String getMsgid() {
+        if (this.msgId == null) {
+            this.msgId = this.type == 0 ? this.srcId +":"+ this.seq+":"+ this.dstId +","+ this.forwardId
+                    : this.srcId +":"+ this.seq+":"+ this.forwardId +","+ this.dstId;
         }
-        return this.uid;
+        return this.msgId;
+    }
+
+    public String getUid() {
+        if (this.uId == null) {
+            this.uId = this.srcId + "," + this.seq;
+        }
+        return uId;
     }
 
     public int getForwardId() {
