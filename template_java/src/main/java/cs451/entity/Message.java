@@ -2,13 +2,14 @@ package cs451.entity;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.StringTokenizer;
 
 public class Message implements Serializable {
     // data to transmit
     private int type; // 0 - Ack, 1 - Msg, 2 - Broadcast
     private int srcId;
     private int seq;
-    private int data;
+    private int payload;
 
     // auxiliary information
     private String forwardHost;
@@ -26,20 +27,25 @@ public class Message implements Serializable {
         this.type = type;
         this.srcId = source;
         this.seq = seq;
-        this.data = data;
+        this.payload = data;
     }
 
     public Message(byte[] data) {
         String raw = new String(data, 0, data.length, StandardCharsets.UTF_8);
-        String[] metas = raw.split(":");
-        this.type = Integer.parseInt(metas[0]);
-        this.srcId = Integer.parseInt(metas[1]);
-        this.seq = Integer.parseInt(metas[2]);
-        this.data = Integer.parseInt(metas[3]);
+        StringTokenizer metas = new StringTokenizer(raw, ":");
+        this.type =  Integer.parseInt(metas.nextToken());
+        this.srcId = Integer.parseInt(metas.nextToken());
+        this.seq = Integer.parseInt(metas.nextToken());
+        this.payload = Integer.parseInt(metas.nextToken());
+//        String[] metas = raw.split(":");
+//        this.type = Integer.parseInt(metas[0]);
+//        this.srcId = Integer.parseInt(metas[1]);
+//        this.seq = Integer.parseInt(metas[2]);
+//        this.payload = Integer.parseInt(metas[3]);
     }
 
-    public int getData(){
-        return this.data;
+    public int getPayload(){
+        return this.payload;
     }
 
     public int getSeq() {
@@ -112,7 +118,16 @@ public class Message implements Serializable {
     }
 
     public byte[] serialize() {
-        return String.format("%d:%d:%d:%d:", this.type, this.srcId, this.seq, this.data).getBytes(StandardCharsets.UTF_8);
+        String sb = this.type +
+                ":" +
+                this.srcId +
+                ":" +
+                this.seq +
+                ":" +
+                this.payload +
+                ":";
+        return sb.getBytes(StandardCharsets.UTF_8);
+//        return String.format("%d:%d:%d:%d:", this.type, this.srcId, this.seq, this.payload).getBytes(StandardCharsets.UTF_8);
     }
 
     @Override

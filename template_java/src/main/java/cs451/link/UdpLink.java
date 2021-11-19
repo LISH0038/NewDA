@@ -53,7 +53,7 @@ public class UdpLink {
     }
 
     public Message receive() {
-        byte[] buff = new byte[64];
+        byte[] buff = new byte[32];
         DatagramPacket packet = new DatagramPacket(buff,buff.length);
         try {
             socket.receive(packet);
@@ -61,7 +61,9 @@ public class UdpLink {
             int forward = this.portToIdMap.get(packet.getPort());
             msg.setForwardId(forward);
             msg.setDstId(this.selfId);
-            msg.setSource(packet.getAddress().getHostAddress(), packet.getPort());
+            if (msg.getType() != 0) {
+                msg.setSource(packet.getAddress().getHostAddress(), packet.getPort());
+            }
             return msg;
         } catch (Exception e) {
             // e.printStackTrace();

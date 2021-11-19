@@ -1,12 +1,11 @@
 package cs451.broadcast;
 
 import cs451.Host;
+import cs451.broadcast.observer.Observer;
 import cs451.entity.Message;
 import cs451.link.PerfectLink;
-import cs451.utility.OutputWriter;
 
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 // Best Effort Broadcast
 
@@ -14,11 +13,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 // BEB2. No duplication: No message is delivered more than once
 // BEB3. No creation: No message is delivered unless it was broadcast
 
-public class Broadcast {
+public class Broadcast implements Observer {
     private final PerfectLink pl;
+    private final Observer observer;
 
-    public Broadcast(int hostId, String hostAddr, int hostPort, List<Host> dstHosts) {
-        this.pl = new PerfectLink(hostId, hostAddr, hostPort, dstHosts);
+    public Broadcast(int hostId, String hostAddr, int hostPort, List<Host> dstHosts, Observer ob) {
+        this.pl = new PerfectLink(hostId, hostAddr, hostPort, dstHosts, this);
+        this.observer = ob;
     }
 
     public void broadcast(Message m) {
@@ -26,13 +27,8 @@ public class Broadcast {
         pl.addToSendBuff(m);
     }
 
-//    public void receive(Message m) {
-//
-//        OutputWriter.addLineToOutputBuffer("d "+m.getSource()+" "+m.getData());
-//    }
-
-    public Message receive() throws InterruptedException {
-        return this.pl.deliverBuff.take();
+    public void onReceive(Message m) {
+        this.observer.onReceive(m);
     }
 
     public void start() {

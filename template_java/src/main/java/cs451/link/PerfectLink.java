@@ -1,6 +1,7 @@
 package cs451.link;
 
 import cs451.Host;
+import cs451.broadcast.observer.Observer;
 import cs451.entity.Message;
 
 import java.util.List;
@@ -22,7 +23,6 @@ public class PerfectLink {
     // AckSet works for sender, it stores ack received from the receiver. It is a hashset of msg seq.
     private ConcurrentHashMap<String, Integer> ackSet = new ConcurrentHashMap<>(100000);
     public LinkedBlockingQueue<Message> sendBuff = new LinkedBlockingQueue<>();
-    public LinkedBlockingQueue<Message> deliverBuff = new LinkedBlockingQueue<>();
 
     // Stores array of received msg index for each process
     private HashSet<String> delivered = new HashSet<>(100000);
@@ -32,7 +32,7 @@ public class PerfectLink {
     private final Thread receive;
     private boolean running = false;
 
-    public PerfectLink(int hostId, String hostAddr, int hostPort, List<Host> dstHosts) {
+    public PerfectLink(int hostId, String hostAddr, int hostPort, List<Host> dstHosts, Observer ob) {
         this.udp = new UdpLink(hostId, hostAddr, hostPort, dstHosts);
         this.hostId = hostId;
         this.dstHosts = dstHosts;
@@ -51,7 +51,7 @@ public class PerfectLink {
                             this.udp.sendToAll(m);
                             // this.sendBuff.add(m);
                             for (Host h: dstHosts) {
-                                Message mCopy = new Message(1, m.getSrcId(), m.getSeq(), m.getData());
+                                Message mCopy = new Message(1, m.getSrcId(), m.getSeq(), m.getPayload());
                                 mCopy.setForwardId(this.hostId);
                                 mCopy.setDstId(h.getId());
                                 mCopy.setDestination(h.getIp(), h.getPort());
@@ -99,7 +99,8 @@ public class PerfectLink {
                     if (!this.delivered.contains(m.getMsgid())) {
                         // trigger deliver event
                         this.delivered.add(m.getMsgid());
-                        this.deliverBuff.add(m);
+//                        this.deliverBuff.add(m);
+                        ob.onReceive(m);
                     }
                     //System.out.println("receive " + ++count + " " +System.currentTimeMillis());
                 }

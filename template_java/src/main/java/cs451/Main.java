@@ -1,8 +1,9 @@
 package cs451;
 
 import cs451.broadcast.UniformReliableBroadcast;
+import cs451.broadcast.observer.Observer;
 import cs451.entity.Message;
-import cs451.utility.IdGenerator;
+import cs451.utility.SeqGenerator;
 import cs451.utility.OutputWriter;
 
 import java.util.ArrayList;
@@ -79,12 +80,19 @@ public class Main {
         System.out.println("Doing some initialization\n");
         int m = parser.m();
         ArrayList<Message> msgToSend = new ArrayList<>();
-        bc = new UniformReliableBroadcast(id, hostAddr, hostPort, dstHosts);
+        bc = new UniformReliableBroadcast(id, hostAddr, hostPort, dstHosts, new Observer() {
+            @Override
+            public void onReceive(Message m) {
+                OutputWriter.addLineToOutputBuffer("d "+m.getSrcId()+" "+m.getPayload());
+            }
+        });
         bc.start();
         for (int j = 1; j < m+1; j++) {
-            Message msg = new Message(2, id, IdGenerator.generateMsgId(), j);
+            int seq = SeqGenerator.generateSeqNum();
+            Message msg = new Message(2, id, seq, seq);
             msgToSend.add(msg);
-            bc.urbBroadcast(msg);
+            bc.broadcast(msg);
+            OutputWriter.addLineToOutputBuffer("b "+msg.getPayload());
         }
 
         System.out.println("Broadcasting and delivering messages...\n");
