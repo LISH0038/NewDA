@@ -80,7 +80,6 @@ public class Main {
 
         System.out.println("Doing some initialization\n");
         int m = parser.m();
-        ArrayList<Message> msgToSend = new ArrayList<>();
         bc = new FIFOBroadcast(id, hostAddr, hostPort, dstHosts, new Observer() {
             @Override
             public void onReceive(Message m) {
@@ -91,8 +90,16 @@ public class Main {
         for (int j = 1; j < m+1; j++) {
             int seq = SeqGenerator.generateSeqNum();
             Message msg = new Message(2, id, seq, seq);
-            msgToSend.add(msg);
             bc.broadcast(msg);
+            // control sending speed
+            if (j%1000 == 0 ) {
+                Thread.sleep(1000);
+                System.out.println(bc.getSelfPendingSize());
+                while (bc.getSelfPendingSize() > 1000) {
+                    Thread.sleep(1000);
+                    System.out.println("sending sleep");
+                }
+            }
             OutputWriter.addLineToOutputBuffer("b "+msg.getPayload());
         }
 

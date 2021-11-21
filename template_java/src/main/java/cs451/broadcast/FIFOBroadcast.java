@@ -13,6 +13,7 @@ public class FIFOBroadcast implements Observer {
     private final Observer observer;
 
     private final HashMap<Integer, SortedBuffer> pendingList = new HashMap<>();
+    private SortedBuffer selfPendingList = new SortedBuffer();
 
     public FIFOBroadcast(int hostId, String hostAddr, int hostPort, List<Host> dstHosts, Observer observer) {
         this.urb = new UniformReliableBroadcast(hostId, hostAddr, hostPort, dstHosts, this);
@@ -20,7 +21,7 @@ public class FIFOBroadcast implements Observer {
         for (Host h: dstHosts) {
             this.pendingList.put(h.getId(), new SortedBuffer());
         }
-        this.pendingList.put(hostId, new SortedBuffer());
+        this.pendingList.put(hostId, selfPendingList);
     }
 
     public void broadcast(Message m) {
@@ -62,6 +63,10 @@ public class FIFOBroadcast implements Observer {
 
         pending.setNewLowest(false);
         // up to here, watermark is the (max delivered seq) + 1;
+    }
+
+    public int getSelfPendingSize() {
+        return this.selfPendingList.getSortedBuffer().size();
     }
 
     public void start() {
