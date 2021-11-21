@@ -17,7 +17,8 @@ public class Message implements Serializable {
     private int forwardId;
     private String dstHost;
     private int dstPort;
-    private int dstId;
+
+    private long lastSentTimestamp;
 
     // identifiers
     private String msgId; // uniquely identify link level msg
@@ -78,8 +79,7 @@ public class Message implements Serializable {
 
     public String getMsgid() {
         if (this.msgId == null) {
-            this.msgId = this.type == 0 ? this.srcId +":"+ this.seq+":"+ this.dstId +","+ this.forwardId
-                    : this.srcId +":"+ this.seq+":"+ this.forwardId +","+ this.dstId;
+            this.msgId = this.srcId + ":" + this.seq + ":" + this.forwardId;
         }
         return this.msgId;
     }
@@ -93,6 +93,10 @@ public class Message implements Serializable {
 
     public int getForwardId() {
         return forwardId;
+    }
+
+    public long getLastSentTimestamp() {
+        return lastSentTimestamp;
     }
 
     public void setSource(String srcHost, int srcPort) {
@@ -109,12 +113,12 @@ public class Message implements Serializable {
         this.forwardId = forwardId;
     }
 
-    public void setDstId(int dstId) {
-        this.dstId = dstId;
-    }
-
     public void setType(int type) {
         this.type = type;
+    }
+
+    public void setLastSentTimestamp(long lastSentTimestamp) {
+        this.lastSentTimestamp = lastSentTimestamp;
     }
 
     public byte[] serialize() {

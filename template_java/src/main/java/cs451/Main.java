@@ -1,5 +1,6 @@
 package cs451;
 
+import cs451.broadcast.FIFOBroadcast;
 import cs451.broadcast.UniformReliableBroadcast;
 import cs451.broadcast.observer.Observer;
 import cs451.entity.Message;
@@ -12,7 +13,7 @@ public class Main {
     private static String hostAddr;
     private static int hostPort;
 
-    private static UniformReliableBroadcast bc;
+    private static FIFOBroadcast bc;
     private static String outputPath;
 
     private static void handleSignal() {
@@ -80,7 +81,7 @@ public class Main {
         System.out.println("Doing some initialization\n");
         int m = parser.m();
         ArrayList<Message> msgToSend = new ArrayList<>();
-        bc = new UniformReliableBroadcast(id, hostAddr, hostPort, dstHosts, new Observer() {
+        bc = new FIFOBroadcast(id, hostAddr, hostPort, dstHosts, new Observer() {
             @Override
             public void onReceive(Message m) {
                 OutputWriter.addLineToOutputBuffer("d "+m.getSrcId()+" "+m.getPayload());

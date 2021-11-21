@@ -11,9 +11,7 @@ import java.util.List;
 
 public class UdpLink {
     private DatagramSocket socket;
-    private int selfId;
 
-    public List<Host> dstHosts;
     public HashMap<Integer, Integer> portToIdMap;
 
     public UdpLink(int hostId, String host, int port, List<Host> dstHosts) {
@@ -22,8 +20,6 @@ public class UdpLink {
         } catch (Exception e){
             // e.printStackTrace();
         }
-        this.dstHosts = dstHosts;
-        this.selfId = hostId;
         this.portToIdMap = new HashMap<>();
         for (Host h: dstHosts) {
             this.portToIdMap.put(h.getPort(), h.getId());
@@ -40,18 +36,6 @@ public class UdpLink {
         }
     }
 
-    public void sendToAll(Message msg)  {
-        byte[] buff = msg.serialize();
-        for (Host h : this.dstHosts) {
-            try {
-                DatagramPacket packet = new DatagramPacket(buff, buff.length, InetAddress.getByName(h.getIp()), h.getPort());
-                socket.send(packet);
-            } catch (Exception e) {
-                // e.printStackTrace();
-            }
-        }
-    }
-
     public Message receive() {
         byte[] buff = new byte[32];
         DatagramPacket packet = new DatagramPacket(buff,buff.length);
@@ -60,7 +44,6 @@ public class UdpLink {
             Message msg = new Message(buff);
             int forward = this.portToIdMap.get(packet.getPort());
             msg.setForwardId(forward);
-            msg.setDstId(this.selfId);
             if (msg.getType() != 0) {
                 msg.setSource(packet.getAddress().getHostAddress(), packet.getPort());
             }
