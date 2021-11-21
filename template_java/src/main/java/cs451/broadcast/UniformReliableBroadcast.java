@@ -20,16 +20,16 @@ public class UniformReliableBroadcast implements Observer{
     public UniformReliableBroadcast(int hostId, String hostAddr, int hostPort, List<Host> dstHosts, Observer ob) {
         this.beb = new Broadcast(hostId, hostAddr, hostPort, dstHosts, this);
         this.observer = ob;
-        this.minVote = dstHosts.size()/2;
+        this.minVote = dstHosts.size()/2 ;
         this.hostId = hostId;
     }
 
     public void broadcast(Message m) {
         this.beb.broadcast(m);
-        // IMPORTANT: the above only send to others, also need to send to itself!!!
-//        HashSet<Integer> pList = ackSet.getOrDefault(m.getUid(), new HashSet<>());
-//        pList.add(this.hostId);
-//        ackSet.put(m.getUid(), pList);
+        // IMPORTANT: also need to send to itself!!!
+        HashSet<Integer> pList = ackSet.getOrDefault(m.getUid(), new HashSet<>());
+        pList.add(this.hostId);
+        ackSet.put(m.getUid(), pList);
     }
 
     public void onReceive(Message m) {
@@ -40,17 +40,18 @@ public class UniformReliableBroadcast implements Observer{
             if (m.getSrcId() != this.hostId && pList.size() == 0){
                 this.beb.broadcast(m);
             }
+
             pList.add(m.getForwardId());
             ackSet.put(m.getUid(), pList);
 
             // Check if deliverable
-            if (pList.size() >= this.minVote) {
+            if (pList.size() > this.minVote) {
                 delivered.add(m.getUid());
                 this.observer.onReceive(m);
                 this.ackSet.remove(m.getUid());
             }
         }
-
+//        System.out.println("urb "+m.getMsgid());
     }
 
 

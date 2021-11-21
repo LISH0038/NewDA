@@ -20,11 +20,13 @@ public class Broadcast {
 
     private final Thread receive;
     private boolean running = false;
+    private int hostId;
 
     public Broadcast(int hostId, String hostAddr, int hostPort, List<Host> dstHosts, Observer ob) {
         this.pl = new PerfectLink(hostId, hostAddr, hostPort, dstHosts);
         this.observer = ob;
         this.dstHosts = dstHosts;
+        this.hostId = hostId;
         this.receive = new Thread( () -> {
             while (running) {
                 try {
@@ -38,12 +40,21 @@ public class Broadcast {
     }
 
     public void broadcast(Message m) {
+        // send to others
         for (Host h: dstHosts) {
             Message mCopy = new Message(1, m.getSrcId(), m.getSeq(), m.getPayload());
             mCopy.setForwardId(h.getId()); // expecting dst id
 //            mCopy.setDstId(h.getId());
             mCopy.setDestination(h.getIp(), h.getPort());
             pl.addToSendBuff(mCopy);
+        }
+        // send to self
+        try {
+            Message mCopy = new Message(1, m.getSrcId(), m.getSeq(), m.getPayload());
+            mCopy.setForwardId(this.hostId);
+            this.pl.deliverBuff.put(mCopy);
+        } catch (InterruptedException e) {
+            // e.printStackTrace();
         }
 //        System.out.println(System.currentTimeMillis()/1000+" broadcast "+m.getMsgid());
     }

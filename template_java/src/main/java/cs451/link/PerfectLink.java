@@ -52,7 +52,7 @@ public class PerfectLink {
 //                            }
 //                            m.setLastSentTimestamp(System.currentTimeMillis());
                             this.udp.send(m);
-                            this.sendBuff.add(m);
+                            this.sendBuff.put(m);
                         } else {
                             this.ackSet.remove(m.getMsgid());
                         }
@@ -74,16 +74,22 @@ public class PerfectLink {
                         this.ackSet.put(m.getMsgid(), 1);
                     }
                 } else {
-                    Message ackMsg = new Message(0, m.getSrcId(), m.getSeq(), 0);
-                    ackMsg.setDestination(m.getForwardHost(), m.getForwardPort());
-                    this.sendBuff.add(ackMsg);
-//                    m.setType(0);
-//                    m.setDestination(m.getForwardHost(), m.getForwardPort());
-//                    this.sendBuff.add(m);
-                    if (!this.delivered.contains(m.getMsgid())) {
-                        // trigger deliver event
-                        this.delivered.add(m.getMsgid());
-                        this.deliverBuff.add(m);
+                    try {
+                        Message ackMsg = new Message(0, m.getSrcId(), m.getSeq(), 0);
+                        ackMsg.setDestination(m.getForwardHost(), m.getForwardPort());
+
+                            this.sendBuff.put(ackMsg);
+
+    //                    m.setType(0);
+    //                    m.setDestination(m.getForwardHost(), m.getForwardPort());
+    //                    this.sendBuff.add(m);
+                        if (!this.delivered.contains(m.getMsgid())) {
+                            // trigger deliver event
+                            this.delivered.add(m.getMsgid());
+                            this.deliverBuff.put(m);
+                        }
+                    } catch (InterruptedException e) {
+                        // e.printStackTrace();
                     }
                 }
             }
@@ -108,6 +114,10 @@ public class PerfectLink {
     }
 
     public void addToSendBuff(Message msgsToSend) {
-        this.sendBuff.add(msgsToSend);
+        try {
+            this.sendBuff.put(msgsToSend);
+        } catch (InterruptedException e) {
+            // e.printStackTrace();
+        }
     }
 }
