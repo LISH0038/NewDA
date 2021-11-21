@@ -97,7 +97,7 @@ public class Main {
                 System.out.println(bc.getSelfPendingSize());
                 while (bc.getSelfPendingSize() > 1000) {
                     Thread.sleep(1000);
-                    System.out.println("sending sleep");
+                    //System.out.println("sending sleep");
                 }
             }
             OutputWriter.addLineToOutputBuffer("b "+msg.getPayload());
