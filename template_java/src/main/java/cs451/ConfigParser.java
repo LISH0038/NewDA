@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ConfigParser {
 
@@ -11,7 +13,7 @@ public class ConfigParser {
 
     private String path;
     private int m;
-    private int i;
+    private final HashMap<Integer, ArrayList<Integer>> causalMap = new HashMap<>();
 
     public boolean populate(String filename) {
         File file = new File(filename);
@@ -28,8 +30,16 @@ public class ConfigParser {
 //                    System.err.println("Problem with the line " + lineNum + " in the config file!");
 //                    return false;
 //                }
-
-                m = Integer.parseInt(splits[0]);
+                if (lineNum == 1) {
+                    m = Integer.parseInt(splits[0]);
+                } else {
+                    int id = Integer.parseInt(splits[0]);
+                    ArrayList<Integer> causal = new ArrayList<>();
+                    for (int j = 1; j < splits.length; j ++) {
+                        causal.add(Integer.parseInt(splits[j]));
+                    }
+                    causalMap.put(id, causal);
+                }
                 // i = Integer.parseInt(splits[1]);
             }
         } catch (IOException e) {
@@ -46,6 +56,8 @@ public class ConfigParser {
 
     public int getM() { return m; }
 
-    public int getI() { return i; }
+//    public int getI() { return i; }
+
+    public HashMap<Integer, ArrayList<Integer>> getCausalMap() { return causalMap; }
 
 }

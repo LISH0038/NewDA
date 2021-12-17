@@ -1,19 +1,22 @@
 package cs451;
 
 import cs451.broadcast.FIFOBroadcast;
+import cs451.broadcast.LCBroadcast;
 import cs451.broadcast.UniformReliableBroadcast;
 import cs451.broadcast.observer.Observer;
 import cs451.entity.Message;
+import cs451.entity.VCMessage;
 import cs451.utility.SeqGenerator;
 import cs451.utility.OutputWriter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Main {
     private static String hostAddr;
     private static int hostPort;
 
-    private static FIFOBroadcast bc;
+    private static LCBroadcast bc;
     private static String outputPath;
 
     private static void handleSignal() {
@@ -77,10 +80,17 @@ public class Main {
         System.out.println("===============");
         System.out.println(parser.config() + "\n");
         System.out.println(parser.m() + "\n");
+        int m = parser.m();
+        HashMap<Integer, ArrayList<Integer>> causalMap = parser.getCausalMap();
+        for (int i: causalMap.keySet()) {
+            System.out.printf("process %d's dependency: ", i);
+            for (int j=0; j < causalMap.get(i).size(); j++) {
+                System.out.print(causalMap.get(i).get(j) + " ");
+            }
+        }
 
         System.out.println("Doing some initialization\n");
-        int m = parser.m();
-        bc = new FIFOBroadcast(id, hostAddr, hostPort, dstHosts, new Observer() {
+        bc = new LCBroadcast(id, hostAddr, hostPort, causalMap, dstHosts, new Observer() {
             @Override
             public void onReceive(Message m) {
                 OutputWriter.addLineToOutputBuffer("d "+m.getSrcId()+" "+m.getPayload());
@@ -89,7 +99,8 @@ public class Main {
         bc.start();
         for (int j = 1; j < m+1; j++) {
             int seq = SeqGenerator.generateSeqNum();
-            Message msg = new Message(2, id, seq, seq);
+            VCMessage msg = new VCMessage(1, id, seq, seq);
+            OutputWriter.addLineToOutputBuffer("b "+msg.getPayload());
             bc.broadcast(msg);
             // control sending speed
             if (j%1000 == 0 ) {
@@ -97,13 +108,12 @@ public class Main {
                 System.out.println(bc.getSelfPendingSize());
                 while (bc.getSelfPendingSize() > 1000) {
                     Thread.sleep(1000);
-                    //System.out.println("sending sleep");
+                    System.out.println("sending sleep");
                 }
             }
-            OutputWriter.addLineToOutputBuffer("b "+msg.getPayload());
         }
 
-        System.out.println("Broadcasting and delivering messages...\n");
+        System.out.println("Broadcasting finished...\n");
 
         // After a process finishes broadcasting,
         // it waits forever for the delivery of messages.

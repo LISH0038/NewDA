@@ -2,6 +2,7 @@ package cs451.link;
 
 import cs451.Host;
 import cs451.entity.Message;
+import cs451.entity.VCMessage;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -41,7 +42,8 @@ public class UdpLink {
         DatagramPacket packet = new DatagramPacket(buff,buff.length);
         try {
             socket.receive(packet);
-            Message msg = new Message(buff);
+//            Message msg = new Message(buff);
+            Message msg = VCMessage.deserialize(buff);
             int forward = this.portToIdMap.get(packet.getPort());
             msg.setForwardId(forward);
             if (msg.getType() != 0) {

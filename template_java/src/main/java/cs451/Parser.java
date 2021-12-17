@@ -1,5 +1,7 @@
 package cs451;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Parser {
@@ -74,7 +76,7 @@ public class Parser {
         return configParser.getM();
     }
 
-    public int i() {
-        return configParser.getI();
+    public HashMap<Integer, ArrayList<Integer>> getCausalMap() {
+        return configParser.getCausalMap();
     }
 }

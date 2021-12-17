@@ -3,6 +3,7 @@ package cs451.broadcast;
 import cs451.Host;
 import cs451.broadcast.observer.Observer;
 import cs451.entity.Message;
+import cs451.entity.VCMessage;
 import cs451.link.PerfectLink;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class Broadcast {
     public void broadcast(Message m) {
         // send to others
         for (Host h: dstHosts) {
-            Message mCopy = new Message(1, m.getSrcId(), m.getSeq(), m.getPayload());
+            Message mCopy = m.newCopy();
             mCopy.setForwardId(h.getId()); // expecting dst id
 //            mCopy.setDstId(h.getId());
             mCopy.setDestination(h.getIp(), h.getPort());
@@ -50,7 +51,7 @@ public class Broadcast {
         }
         // send to self
         try {
-            Message mCopy = new Message(1, m.getSrcId(), m.getSeq(), m.getPayload());
+            Message mCopy = m.newCopy();
             mCopy.setForwardId(this.hostId);
             this.pl.deliverBuff.put(mCopy);
         } catch (InterruptedException e) {

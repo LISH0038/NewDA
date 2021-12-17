@@ -1,15 +1,14 @@
 package cs451.entity;
 
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 
-public class Message implements Serializable {
+public class Message {
     // data to transmit
-    private int type; // 0 - Ack, 1 - Msg, 2 - Broadcast
-    private int srcId;
-    private int seq;
-    private int payload;
+    int type; // 0 - Ack, 1 - Msg, 2 - Broadcast
+    int srcId;
+    int seq;
+    int payload;
 
     // auxiliary information
     private String forwardHost;
@@ -17,9 +16,7 @@ public class Message implements Serializable {
     private int forwardId;
     private String dstHost;
     private int dstPort;
-
-    private long lastSentTimestamp;
-
+    
     // identifiers
     private String msgId; // uniquely identify link level msg
     private String uId; // uniquely identify broadcast level msg
@@ -43,6 +40,10 @@ public class Message implements Serializable {
 //        this.srcId = Integer.parseInt(metas[1]);
 //        this.seq = Integer.parseInt(metas[2]);
 //        this.payload = Integer.parseInt(metas[3]);
+    }
+
+    public Message newCopy() {
+        return new Message(this.type, this.srcId, this.seq, this.payload);
     }
 
     public int getPayload(){
@@ -95,9 +96,6 @@ public class Message implements Serializable {
         return forwardId;
     }
 
-    public long getLastSentTimestamp() {
-        return lastSentTimestamp;
-    }
 
     public void setSource(String srcHost, int srcPort) {
         this.forwardHost = srcHost;
@@ -111,14 +109,6 @@ public class Message implements Serializable {
 
     public void setForwardId(int forwardId) {
         this.forwardId = forwardId;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public void setLastSentTimestamp(long lastSentTimestamp) {
-        this.lastSentTimestamp = lastSentTimestamp;
     }
 
     public byte[] serialize() {
